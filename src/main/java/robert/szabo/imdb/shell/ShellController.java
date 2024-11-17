@@ -43,9 +43,9 @@ public class ShellController {
     }
 
     private boolean checkArgValidity(String arg) {
-        boolean surroundedByQuotes = arg.startsWith("\"") && arg.endsWith("\"");
+//        boolean surroundedByQuotes = arg.startsWith("\"") && arg.endsWith("\"");
         boolean isNotAFlag = !arg.startsWith("-");
-        return surroundedByQuotes && isNotAFlag;
+        return isNotAFlag;
     }
 
     private String convertDurationToStr(Long runtime) {
@@ -88,7 +88,7 @@ public class ShellController {
                         this.PrintVerbose = true;
                         break;
                     case "-t": // search by title
-                        System.out.println("S REGEX");
+//                        System.out.println("S REGEX");
                         //take the flag argument and check if its valid
                         String titleSearchArg = flags[i+1];
                         if (checkArgValidity(titleSearchArg)) this.movieQueryBuilder.withTitle(titleSearchArg.substring(1, titleSearchArg.length()-1));
@@ -97,7 +97,6 @@ public class ShellController {
                             System.out.println("Error: Your flag argument for \"-t\" was found to be invalid");
                             hasError = true;
                         }
-                        System.out.println(titleSearchArg);
                         break;
                     case "-d": //search by director
 //                        System.out.print("SEARCH BY DIRECTOR REGEX: ");
@@ -107,7 +106,6 @@ public class ShellController {
                             System.out.println("Error: Your flag argument for \"-d\" was found to be invalid");
                             hasError = true;
                         }
-                        System.out.println(dirSearchArg);
                         break;
                     case "-a": //search by actor
 //                        System.out.println("SEARCH BY ACTOR");
@@ -127,7 +125,6 @@ public class ShellController {
                     default:
                         break;
                 }
-
             } catch (ArrayIndexOutOfBoundsException exc) {
                 System.out.println("Error! No Argument given with your flag.");
                 hasError = true;
@@ -186,7 +183,7 @@ public class ShellController {
                 Optional<Director> d = personQueryBuilder.getDirector(mDirector);
                 if (d.isPresent()) {
                     directorRef = d.get();
-                    System.out.println("Director found!" + directorRef.getName());
+//                    System.out.println("Director found!" + directorRef.getName());
                 }
                 else {
                     System.out.println("Can't find that Director. Try again.");
@@ -313,13 +310,12 @@ public class ShellController {
                 evalInputCommand(splitCommand(cmd));
             }
             // PRINT STRING BUFFER
-            System.out.println(outputStr);
+            System.out.print(outputStr);
             // CLEAR STRING BUFFER
             outputStr.setLength(0);
             // reset values for the next command
             this.PrintVerbose = false;
             this.hasError = false;
-
         }
     }
 }

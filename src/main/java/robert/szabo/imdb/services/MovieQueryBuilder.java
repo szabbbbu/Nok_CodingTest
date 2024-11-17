@@ -22,7 +22,6 @@ public class MovieQueryBuilder {
     private boolean descByLen;
     private char MainCmd;
 
-
     @Autowired
     public MovieRepo repo;
     @PersistenceContext
@@ -53,6 +52,13 @@ public class MovieQueryBuilder {
         this.MainCmd = cmd;
     }
 
+    private void reset() {
+        this.ActorRegex =  null;
+        this.DirRegex = null;
+        this.Title = null;
+        this.ascByLen = false;
+        this.descByLen = false;
+    }
 
     public boolean handleCreateMovie(Movie newMovie) {
         if (repo.existsById(new MovieID(newMovie.getTitle(), newMovie.getDirID()))) {
@@ -80,7 +86,7 @@ public class MovieQueryBuilder {
             predicates.add(titlePred);
         }
         if (DirRegex != null && !DirRegex.isEmpty()) {
-            Predicate dirPred = cb.like(movieRoot.get("Director").get("Name"), "%" + this.DirRegex + "%");
+            Predicate dirPred = cb.like(movieRoot.get("Director").get("name"), "%" + this.DirRegex + "%");
             predicates.add(dirPred);
         }
 
@@ -88,7 +94,7 @@ public class MovieQueryBuilder {
 //            System.out.println(this.ActorRegex);
             Join<Movie, Actor> actorJoin = movieRoot.join("Actors");
 //            System.out.println(actorJoin);
-            Predicate ap = cb.like(actorJoin.get("Name"), "%" + this.ActorRegex + "%");
+            Predicate ap = cb.like(actorJoin.get("name"), "%" + this.ActorRegex + "%");
             predicates.add(ap);
         }
         cq.where(cb.and(predicates.toArray(new Predicate[0])));
@@ -105,7 +111,7 @@ public class MovieQueryBuilder {
         else {
             cq.orderBy(cb.asc(movieRoot.get("Duration")));
         }
-
+        this.reset();
         return entityManager.createQuery(cq).getResultList();
     }
 }
